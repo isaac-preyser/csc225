@@ -18,9 +18,8 @@ public class OddEqualityTest {
 
     @ParameterizedTest
     @ArgumentsSource(FileArgumentsProvider.class)
-    void testMyFunction(int n, int[] array1, int[] array2, boolean expected) {
-        boolean result = OddEquality.oddEqual(array1, array2); // Replace with your actual function
-        assertEquals(expected, result);
+    void testOddEquals(int n, int[] array1, int[] array2, boolean expected) {
+        assertThat(OddEquality.oddEqual(array1, array2)).isEqualTo(expected);
     }
 
 
