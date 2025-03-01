@@ -1,12 +1,39 @@
 /* 
  * CSC 225 - Assignment 3
- * Name: 
- * Student number:
+ * Name: Isaac Preyser
+ * Student number: V01022512
  */
- 
-/* 
-Algorithm analysis goes here.
-*/
+
+ /*
+    Time to do some analysis.
+
+    We have that T(n) = 3T(n/2) + 4n. (plus a few constant time operations which really don't matter too much at scale)
+    We want to find a closed form of this equation! (so lets do it boss)
+    T(n) = 3T(n/2) + 4n
+    .
+    .
+    .
+    T(n) = 3^{k} T(n/2^k) + ((3^k) - 1) / 2 * 4n
+         = 3^{k} T(n/2^k) + ( 3^k - 1 ) * 2n
+
+    Let n/2^k = 1,
+    =>  k = log_2(n)
+
+    Hence,
+    T(n) = 3^{log_2(n)} T(1) + (3^{log_2(n) - 1 ) * 2n
+         = n^{log_2(3)} T(1) + 2n^{1 + log_2(3)} - 2n
+
+    We see the dominant growing term is n^{log_2(3)}, and so we can use that for the Big-O analysis.
+
+    T(n) \in O(n^{log_2(3)})
+    T(n) \in O(n^{~1.58})
+    Hence T(n) grows less fast than O(n^2).
+
+
+
+
+
+     */
  
  
 import java.io.*;
@@ -62,36 +89,7 @@ public class OddEquality {
 
     }
 
-    /*
-    Time to do some analysis.
 
-    We have that T(n) = 3T(n/2) + 4n. (plus a few constant time operations which really don't matter too much at scale)
-    We want to find a closed form of this equation! (so lets do it boss)
-    T(n) = 3T(n/2) + 4n
-    .
-    .
-    .
-    T(n) = 3^{k} T(n/2^k) + ((3^k) - 1) / 2 * 4n
-         = 3^{k} T(n/2^k) + ( 3^k - 1 ) * 2n
-
-    Let n/2^k = 1,
-    =>  k = log_2(n)
-
-    Hence,
-    T(n) = 3^{log_2(n)} T(1) + (3^{log_2(n) - 1 ) * 2n
-         = n^{log_2(3)} T(1) + 2n^{1 + log_2(3)} - 2n
-
-    We see the dominant growing term is n^{log_2(3)}, and so we can use that for the Big-O analysis.
-
-    T(n) \in O(n^{log_2(3)})
-    T(n) \in O(n^{~1.58})
-    Hence T(n) grows less fast than O(n^2).
-
-
-
-
-
-     */
 
 
 
