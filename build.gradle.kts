@@ -1,6 +1,8 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+
+    id("info.solidsoft.pitest") version "1.9.11"
 }
 
 repositories {
@@ -28,4 +30,11 @@ dependencies {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+pitest {
+    junit5PluginVersion.set("0.15")
+    targetClasses.set(listOf("com.yourpackage.*")) // Replace with your package name
+    mutators.set(listOf("DEFAULTS"))
+    outputFormats.set(listOf("HTML"))
 }
