@@ -69,6 +69,7 @@ public class OddEquality {
                 break;
             }
         }
+
         if (equal) {
             memo.put(key, true);
             return true;
