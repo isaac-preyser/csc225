@@ -7,21 +7,22 @@
  /*
     Time to do some analysis.
 
-    We have that T(n) = 6T(n/2) + 4n. (plus a few constant time operations which really don't matter too much at scale)
+    We have that T(n) = 6T(n/2) + n. (plus a few constant time operations which really don't matter too much at scale)
+    In general, we will do better due to the memoization, the worst-case analysis assumes that we have to recompute every subproblem.
     We want to find a closed form of this equation! (so lets do it boss)
-    T(n) = 6T(n/2) + 4n
+    T(n) = 6T(n/2) + n
     .
     .
     .
-    T(n) = 6^{k} T(n/2^k) + ((6^k) - 1) / 2 * 4n
-         = 6^{k} T(n/2^k) + ( 6^k - 1 ) * 2n
+    T(n) = 6^{k} T(n/2^k) + ((6^k) - 1) / 2 * n
 
     Let n/2^k = 1,
     =>  k = log_2(n)
 
     Hence,
-    T(n) = 6^{log_2(n)} T(1) + (6^{log_2(n) - 1 ) * 2n
-         = n^{log_2(6)} T(1) + 2n^{1 + log_2(6)} - 2n
+    T(n) = 6^{log_2(n)} T(1) + (6^{log_2(n)} - 1) / 2 * n
+         = n^{log_2(6)} + (n^{log_2(6)} - 1) / 2 * n
+         = n^{log_2(6)} + (n^{1 + log_2(6)} - n) / 2
 
     We see the dominant growing term is n^{log_2(6)}, and so we can use that for the Big-O analysis.
 
@@ -56,7 +57,7 @@ public class OddEquality {
                                     Map<String, Boolean> memo) {
         int len = endA - startA;
         // Use a key to identify this subproblem.
-        String key = startA + "," + endA + "," + startB + "," + endB;
+        String key = startA + "," + endA + "," + startB + "," + endB; // O(n) operation for n = length of key.
         if (memo.containsKey(key)) {
             return memo.get(key);
         }
@@ -84,17 +85,27 @@ public class OddEquality {
         // Calculate midpoint.
         int mid = len / 2;
 
-        // Recursively check the three conditions.
-        boolean condA = oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo)
-                && oddEqual(a, startA + mid, endA, b, startB + mid, endB, memo);
-        boolean condB = oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo)
-                && oddEqual(a, startA, startA + mid, b, startB + mid, endB, memo);
-        boolean condC = oddEqual(a, startA + mid, endA, b, startB, startB + mid, memo)
-                && oddEqual(a, startA + mid, endA, b, startB + mid, endB, memo);
+        // Check condition A: split arrays into halves and compare.
+        if (oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo) &&
+                oddEqual(a, startA + mid, endA, b, startB + mid, endB, memo)) {
+            memo.put(key, true);
+            return true;
+        }
+        // Check condition B: compare first half of A with both halves of B.
+        if (oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo) &&
+                oddEqual(a, startA, startA + mid, b, startB + mid, endB, memo)) {
+            memo.put(key, true);
+            return true;
+        }
+        // Check condition C: compare second half of A with both halves of B.
+        if (oddEqual(a, startA + mid, endA, b, startB, startB + mid, memo) &&
+                oddEqual(a, startA + mid, endA, b, startB + mid, endB, memo)) {
+            memo.put(key, true);
+            return true;
+        }
 
-        boolean result = condA || condB || condC;
-        memo.put(key, result);
-        return result;
+        memo.put(key, false);
+        return false;
     }
 
 
