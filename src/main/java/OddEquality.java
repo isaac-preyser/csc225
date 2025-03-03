@@ -8,33 +8,30 @@
     Time to do some analysis.
 
     We have that T(n) = 4T(n/2) + 2n. (plus a few constant time operations which really don't matter too much at scale)
-    In general, we will do better due to the memoization, the worst-case analysis assumes that we have to recompute every sub-problem.
 
-    The memoization is especially helpful as the subproblems are overlapping, and so we can avoid recomputing the same sub-problems. We have 4 unique sub-problems, and 2 repeats.
+    The memoization is especially helpful as the sub-problems are overlapping, and so we can avoid recomputing the same sub-problems. We are guaranteed at least 2 repeated problems, leaving at worst 4 sub-problems to do.
 
     Therefore we have that T(n) = 4T(n/2) + 2n.
 
 
     We want to find a closed form of this equation! (so lets do it boss)
     T(n) = 4T(n/2) + 2n
+    T(n) = 4(4T(n/4) + n) + 2n
+    T(n) = 4(4(4T(n/8) + n/2) + n) + 2n
+    T(n) = 4(4(4(4T(n/16) + n/4) + n/2) + n) + 2n
     .
     .
     .
-    T(n) = 4^{k} T(n/2^k) + ((4^k) - 1) / 2 * 2n
+    T(n) = 4^{k} T(n/2^k) + 4(1 - (1/2)^k)n ; by geometric series formula (a(1 - r^n) / (1 - r))
 
     Let n/2^k = 1,
     =>  k = log_2(n)
 
-    Hence,
-    T(n) = 4^{log_2(n)} T(1) + (4^{log_2(n)} - 1) / 2 * 2n
-         = n^{log_2(4)} + (n^{log_2(4)} - 1) * n ; as T(1) = 1
-         = n^{log_2(4)} + (n^{1 + log_2(4)} - n)
+    T(n) = 4^{log_2(n)} T(1) + 4(1 - (1/2)^{log_2(n)})n
+    T(n) = 4^{log_2(n)} T(1) + 4(1 - 1/n)n
+    T(n) = n^2 T(1) + 4n - 4
 
-    We see the dominant growing term is n^{log_2(4)}, and so we can use that for the Big-O analysis.
-
-    T(n) \in O(n^{log_2(4)})
-    T(n) \in O(n^{2})
-    Hence T(n) grows (at a worst possible case) at a rate of O(n^2).
+    T(n) = O(n^2) in the worst-case, performing significantly better in most scenarios due to the memoization.
 
 
 
@@ -75,7 +72,7 @@ public class OddEquality {
                 equal = false;
                 break;
             }
-        }
+        } // O(n) operation for n = length of subarray.
 
         if (equal) {
             memo.put(key, true);
