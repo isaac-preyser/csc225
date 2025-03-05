@@ -7,39 +7,38 @@
  /*
     Time to do some analysis.
 
-    We have that T(n) = 4T(n/2) + 2n. (plus a few constant time operations which really don't matter too much at scale)
+    We have that T(n) = 3T(n/2) + 2n + k,
+    (for k = constant operations) in the worst case due to the branching structure of the recursion,
+    and memoization.
 
-    The memoization is especially helpful as the sub-problems are overlapping, and so we can avoid recomputing the same sub-problems. We are guaranteed at least 2 repeated problems, leaving at worst 4 sub-problems to do.
+    The memoization is especially helpful as the sub-problems are overlapping,
+    and so we can avoid recomputing the same sub-problems.
+    We are guaranteed at least 2 repeated problems, leaving at worst 4 sub-problems to do.
 
-    Therefore we have that T(n) = 4T(n/2) + 2n.
+    -----------------------------------------------------------------------------------------
 
-
-    We want to find a closed form of this equation! (so lets do it boss)
-    T(n) = 4T(n/2) + 2n
-    T(n) = 4(4T(n/4) + n) + 2n
-    T(n) = 4(4(4T(n/8) + n/2) + n) + 2n
-    T(n) = 4(4(4(4T(n/16) + n/4) + n/2) + n) + 2n
+    We want to find a closed form of this equation!
+    (so lets do it boss)
+    T(n) = 3T(n/2) + 2n
+    T(n) = 3(3T(n/4) + n) + 2n
+    T(n) = 3(3(3T(n/8) + n/2) + n) + 2n
+    T(n) = 3(3(3(3T(n/16) + n/4) + n/2) + n) + 2n
     .
     .
     .
-    T(n) = 4^{k} T(n/2^k) + 4(1 - (1/2)^k)n ; by geometric series formula (a(1 - r^n) / (1 - r))
+    T(n) = 3^{k} T(n/2^k) + 3(1 - (1/2)^k)n ; by geometric series formula (a(1 - r^n) / (1 - r))
 
     Let n/2^k = 1,
     =>  k = log_2(n)
 
-    T(n) = 4^{log_2(n)} T(1) + 4(1 - (1/2)^{log_2(n)})n
-    T(n) = 4^{log_2(n)} T(1) + 4(1 - 1/n)n
-    T(n) = n^2 T(1) + 4n - 4
+    T(n) = 3^{log_2(n)} T(1) + 3(1 - (1/2)^{log_2(n)})n
+    T(n) = 3^{log_2(n)} T(1) + 3(1 - 1/n)n
+    T(n) = n^{log_2(3)} + 3n - 3
 
-    T(n) = O(n^2) in the worst-case, performing significantly better in most scenarios due to the memoization.
-
-
-
-
+    T(n) = O(n^~1.58) in the worst-case, performing significantly better in most scenarios due to the memoization.
 
      */
- 
- 
+
 import java.io.*;
 import java.util.*;
 
@@ -88,25 +87,23 @@ public class OddEquality {
         // Calculate midpoint.
         int mid = len / 2;
 
-        // Check condition A: split arrays into halves and compare.
-        if (oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo) &&
+        // Check Condition IIa) and IIb).
+        if (oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo)) {
+            if (oddEqual(a, startA + mid, endA, b, startB + mid, endB, memo)) {
+                memo.put(key, true); // IIa) is satisfied.
+                return true;
+            }
+            if (oddEqual(a, startA, startA + mid, b, startB + mid, endB, memo)) {
+                memo.put(key, true); // IIb) is satisfied.
+                return true;
+            }
+        }
+//      Check Condition IIc)
+        else if (oddEqual(a, startA + mid, endA, b, startB, startB + mid, memo) &&
                 oddEqual(a, startA + mid, endA, b, startB + mid, endB, memo)) {
             memo.put(key, true);
             return true;
         }
-        // Check condition B: compare first half of A with both halves of B.
-        if (oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo) &&
-                oddEqual(a, startA, startA + mid, b, startB + mid, endB, memo)) {
-            memo.put(key, true);
-            return true;
-        }
-        // Check condition C: compare second half of A with both halves of B.
-        if (oddEqual(a, startA + mid, endA, b, startB, startB + mid, memo) &&
-                oddEqual(a, startA + mid, endA, b, startB + mid, endB, memo)) {
-            memo.put(key, true);
-            return true;
-        }
-
         memo.put(key, false);
         return false;
     }
@@ -138,7 +135,7 @@ public class OddEquality {
 			System.out.printf("Unable to open %s\n",args[0]);
 			return;
 		}
-		System.out.printf("Reading input values from %s.\n",args[0]);
+//		System.out.printf("Reading input values from %s.\n",args[0]);
 	}else{
 		s = new Scanner(System.in);
 		System.out.printf("Reading input values from stdin.\n");
