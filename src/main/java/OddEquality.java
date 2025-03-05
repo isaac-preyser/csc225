@@ -48,9 +48,9 @@ public class OddEquality {
     public static boolean oddEqual(int[] a, int[] b) {
         if (a.length != b.length) {
             return false;
-        }
+        } // O(1) operation.
         // Create a memo map to cache results.
-        Map<String, Boolean> memo = new HashMap<>();
+        Map<String, Boolean> memo = new HashMap<>(); // O(1) operation.
         return oddEqual(a, 0, a.length, b, 0, b.length, memo);
     }
 
@@ -59,9 +59,9 @@ public class OddEquality {
                                     Map<String, Boolean> memo) {
         int len = endA - startA;
         // Use a key to identify this subproblem.
-        String key = startA + "," + endA + "," + startB + "," + endB; // O(n) operation for n = length of key.
+        String key = startA + "," + endA + "," + startB + "," + endB; // O(n) operation for n = length of key. (essentially O(1) for our purposes)
         if (memo.containsKey(key)) {
-            return memo.get(key);
+            return memo.get(key); // O(1) operation.
         }
 
         // Base case: element-wise equality.
@@ -75,17 +75,17 @@ public class OddEquality {
 
         if (equal) {
             memo.put(key, true);
-            return true;
+            return true; // O(1) operation.
         }
 
         // If the subarray length is odd, Condition II doesn't apply.
         if (len % 2 != 0) {
             memo.put(key, false);
-            return false;
+            return false; // O(1) operation.
         }
 
         // Calculate midpoint.
-        int mid = len / 2;
+        int mid = len / 2; // O(1) operation.
 
         // Check Condition IIa) and IIb).
         if (oddEqual(a, startA, startA + mid, b, startB, startB + mid, memo)) {
@@ -135,7 +135,7 @@ public class OddEquality {
 			System.out.printf("Unable to open %s\n",args[0]);
 			return;
 		}
-//		System.out.printf("Reading input values from %s.\n",args[0]);
+		System.out.printf("Reading input values from %s.\n",args[0]);
 	}else{
 		s = new Scanner(System.in);
 		System.out.printf("Reading input values from stdin.\n");
