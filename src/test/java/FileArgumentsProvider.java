@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
 public class FileArgumentsProvider implements ArgumentsProvider {
-    private static final String INPUT_DIR = "src/test/test_files/input/";
-    private static final String OUTPUT_DIR = "src/test/test_files/output/";
+    private static final String INPUT_DIR = "src/test/resources/test_files/input/";
+    private static final String OUTPUT_DIR = "src/test/resources/test_files/output/";
 
     @Override
     public Stream<? extends Arguments> provideArguments(org.junit.jupiter.api.extension.ExtensionContext context) throws Exception {
